@@ -1,0 +1,8 @@
+prefix=/home/jackoozy/manipulator_ws/install
+
+Name: foreman
+Description: Description of foreman
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

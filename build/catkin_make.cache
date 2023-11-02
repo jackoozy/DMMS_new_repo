@@ -1,0 +1,2 @@
+ds4_driver:foreman:foreman_msg:trajectory_planner
+-DCATKIN_DEVEL_PREFIX=/home/jackoozy/manipulator_ws/devel -DCMAKE_INSTALL_PREFIX=/home/jackoozy/manipulator_ws/install -G Unix Makefiles

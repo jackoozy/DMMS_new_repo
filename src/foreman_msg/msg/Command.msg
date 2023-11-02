@@ -1,0 +1,9 @@
+std_msgs/Bool preciseMode
+std_msgs/Bool eeOrientationMode 
+std_msgs/Bool jointMode
+std_msgs/Int8 targetJoint
+std_msgs/Float32 x
+std_msgs/Float32 y
+std_msgs/Float32 z
+std_msgs/Bool incrementQ
+std_msgs/Bool decrementQ
