@@ -2,8 +2,9 @@ import rospy
 from sensor_msgs.msg import Joy
 from foreman_msg.msg import Command
 
-def computeCommand(currentJoy):
+def computeCommand():#currentJoy):
     # ensure not first time callback function was called, if it was, define variables:
+    global currentJoy
     if 'lastJoy' not in globals():
         global lastJoy
         lastJoy = currentJoy
@@ -21,7 +22,7 @@ def computeCommand(currentJoy):
         lastCommand.incrementQ.data = False
         lastCommand.decrementQ.data = False
         rospy.loginfo("Controller connected...")
-        return
+        return lastCommand
     global command
     command = Command()
 
@@ -83,10 +84,11 @@ def computeCommand(currentJoy):
         command.z.data = 0.0
 
     #if not command == lastCommand:
-    pub.publish(command)
+    #pub.publish(command)
 
     lastJoy = currentJoy
     lastCommand = command
+    return command
 
 def wasPressed(b0,b1):
     if (b0 == 0 and b1 == 1):
@@ -94,12 +96,24 @@ def wasPressed(b0,b1):
     else:
         return 0
 
+subscribed = 0
+def getJoy(msg):
+    global currentJoy
+    currentJoy = msg
+    global subscribed
+    subscribed = 1
+
+
 if __name__ == '__main__':
     rospy.init_node('foreman')
-    rospy.Subscriber("/joy", Joy, computeCommand)
+    #rospy.Subscriber("/joy", Joy, computeCommand)
+    rospy.Subscriber("/joy", Joy, getJoy)
     pub = rospy.Publisher("/command", Command, queue_size=2)
+
+
+    while subscribed == 0: pass
     
-    rate = rospy.Rate(5)  # 10 Hz
+    rate = rospy.Rate(5)  # 5 Hz
     while not rospy.is_shutdown():
         #lastCommand = Command()
         #lastCommand.preciseMode.data = False
@@ -111,4 +125,6 @@ if __name__ == '__main__':
         #lastCommand.z.data = 0.0
         #astCommand.incrementQ.data = False
         #lastCommand.decrementQ.data = False
+        newMessage = computeCommand()
+        pub.publish(newMessage)
         rate.sleep()

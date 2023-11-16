@@ -21,7 +21,7 @@ def constructRobot():
     l2 = DHLink(d= 0, a= .5, alpha= 0,offset=pi/2, qlim = ql)
     l3 = DHLink(d= 0, a= .5, alpha= 0, qlim = ql)
     l4 = DHLink(d= 0, a= .2, alpha= 0, qlim = ql)
-    l5 = DHLink(d = 0, a = .2, alpha = pi/2, qlim = ql)
+    l5 = DHLink(d = 0, a = .2, alpha = 0, qlim = ql)
     # robot
     global robot 
     robot = DHRobot([l1, l2, l3, l4, l5], name= 'robot')
@@ -29,7 +29,7 @@ def constructRobot():
 
 def newQRRMC(command):
     # condition joystick input
-    velFactor = 0.10 # --> final ee velocity then: velFactor*joyInput where joyInput in [-1,1]
+    velFactor = 0.1 # --> final ee velocity then: velFactor*joyInput where joyInput in [-1,1]
     preciseModeVelFactor = 0.5
     if command.preciseMode.data == 1:
         velX,velY,velZ = (command.x.data*velFactor*preciseModeVelFactor,
@@ -45,31 +45,18 @@ def newQRRMC(command):
     # impossible due to 5 DoF robot):
     global q_next
     if command.eeOrientationMode.data == 0:
-
         ev = [velX,velY,velZ,0,0]
         J = robot.jacob0(q)
         J = np.delete(J,5,0)
         invJ = np.linalg.pinv(J)
         dq = invJ @ ev
         q_next = np.add(q,dq)
-        
-
-        #T_EE = robot.fkine(q).A
-        #pos_EE = transl(T_EE)     
-        #T_EE_new = SE3.Trans(velX+pos_EE[0], velY+pos_EE[1], velZ+pos_EE[2])
-        #q_next = robot.ikine_LM(T_EE_new, q0=q, mask=[1,1,1,0,0,0],joint_limits=False).q
-        # as joint 1 should be continuous, offset wraparound
-        #dq1 = q_next[0]-q[0]
-        #if abs(dq1) > pi:
-        #    if dq1>1: # if -pi to +pi
-        #        q_next[0]=-2*pi-q_new[0]
-        #    elif dq1<1: # if +pi to -pi
-        #        q_next[0]=2*pi+q_new[0]
-        #else: q_next = q
+    
     else:
-        ev = [0,0,0,velX,velY,velZ]
+        rotationFactor = 10
+        ev = [0,0,velX*rotationFactor,velY*rotationFactor,velZ*rotationFactor]
         J = robot.jacob0(q)
-        #J = np.delete(J, 2, axis=0) # neglect z-axis position-lock
+        J = np.delete(J, 2, axis=0) # neglect z-axis position-lock
         invJ = np.linalg.pinv(J)
         dq = invJ @ ev
         q_next = np.add(q,dq)
@@ -84,7 +71,7 @@ def newQRRMC(command):
 
 def newQJM(command):
     # directly control angular positition of joint i:
-    velFactor = 0.04
+    velFactor = 0.015
     preciseModeVelFactor = 0.5
     q_next = q
     if command.preciseMode.data == 1:
