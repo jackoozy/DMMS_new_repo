@@ -6,17 +6,17 @@ These ROS packages form a real-time remote-control system (_the system_) for a s
 
 ## Setup Directions
 1. ensure dualshock4 controller connected to computer, then run:
-    * *roslaunch ds4_driver ds4_driver.launch* *
+    *roslaunch ds4_driver ds4_driver.launch*
 
 2. if you want to run the simulation for visualisation, run:
-    * *roslaunch robot_model_pkg robot_pos_xacro.launch* *
-    * *roslaunch robot_control_pkg robot_pos_control.launch* *
+    *roslaunch robot_model_pkg robot_pos_xacro.launch*
+    *roslaunch robot_control_pkg robot_pos_control.launch*
 
-3. navigate to: <path to this repo>* */src/foreman/scripts* * and run:
-    * *python3 forman.py* *
+3. navigate to: <path to this repo>*/src/foreman/scripts* and run:
+    *python3 forman.py*
 
-4. navigate to: <path to this repo>* */src/trajectory_planner/scripts* * and run:
-    * *python3 trajectory_planner.py* *
+4. navigate to: <path to this repo>*/src/trajectory_planner/scripts* and run:
+    *python3 trajectory_planner.py*
 
 ## Customisation to other controllers/robot parameters
-To incorporate other controllers into the system, ensure that control signals are published to topic /joy while omitting step 1. above. To modify the system for other robots, ensure accuracy of DH parameters as defined in class * *trajectory_planner* *.
+To incorporate other controllers into the system, ensure that control signals are published to topic /joy while omitting step 1. above. To modify the system for other robots, ensure accuracy of DH parameters as defined in class *trajectory_planner*.
